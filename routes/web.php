@@ -146,14 +146,12 @@ Route::get('/api/proxy-product-info/{id}', function($id) {
         ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 });
 
-Route::get('/api/proxy-comments/{id}', function($id) {
-    $res = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
-        ->get("https://demodienmay.125.atoz.vn/ww2/module.sanpham.chitiet.asp?id={$id}");
+Route::get('/api/proxy-binhluan/{id}/{page?}', function($id, $page = 1) {
+    $apiUrl = "http://demodienmay.125.atoz.vn/ww2/binhluan.pc.asp?id={$id}&txtloai=desc&pageid={$page}";
+    $res = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])->get($apiUrl);
     return response($res->body(), $res->status())
         ->header('Content-Type', 'application/json')
-        ->header('Access-Control-Allow-Origin', '*')
-        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        ->header('Access-Control-Allow-Origin', '*');
 });
 
 // Route OPTIONS cho tất cả proxy endpoint (nếu cần)

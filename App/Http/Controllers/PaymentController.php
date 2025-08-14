@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+/* namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -79,5 +79,69 @@ class PaymentController extends Controller
         $request->session()->forget('cart');
 
         return redirect()->route('payment.form')->with('success', 'Đặt hàng thành công! Đơn hàng đã được gửi.');
+    }
+}
+ */
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+
+class PaymentController extends Controller
+{
+    /**
+     * Hiển thị form đặt hàng
+     */
+    public function showPaymentForm()
+    {
+        return view('payment.form');
+    }
+
+    /**
+     * Xử lý đặt hàng khi nhấn nút "Đặt hàng"
+     * - Validate dữ liệu
+     * - Nếu thành công: xóa giỏ hàng, hiển thị thông báo thành công
+     * - Nếu thất bại: hiển thị thông báo lỗi
+     */
+    public function processPayment(Request $request)
+    {
+        // 1. Kiểm tra form đầu vào
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'sdt' => 'required|regex:/^[0-9]{10}$/',
+            'address' => 'required|string|max:500',
+            'payment_method' => 'required|in:cod,bank_transfer,online_payment',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // 2. Lấy giỏ hàng từ session
+        $cart = session('cart', []);
+        if (empty($cart)) {
+            return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống.');
+        }
+
+        // 3. Xử lý đơn hàng (ở đây chỉ giả lập thành công, không gọi API)
+         try {
+            // Có thể lưu đơn hàng vào DB tại đây nếu muốn
+
+            // Xóa giỏ hàng sau khi đặt thành công
+            $request->session()->forget('cart');
+
+            // Thông báo thành công (sửa route về trang chủ)
+            return redirect()->route('payment.form')->with('success', 
+                '✔Cám ơn đã đặt hàng!<br>Đơn đặt hàng đã được chuyển đi, chúng tôi sẽ liên hệ với quý khách sớm nhất.<br>Vui lòng click <a href="'.url('/').'">vào đây</a> về trang chủ'
+            );
+        } catch (\Exception $e) {
+            Log::error('Lỗi đặt hàng: '.$e->getMessage());
+            return redirect()->back()->with('error', 'Đặt hàng thất bại. Vui lòng thử lại sau!');
+        }
     }
 }

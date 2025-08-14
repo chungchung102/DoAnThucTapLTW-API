@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 @section('title', $title)
 @section('content')
@@ -472,34 +471,20 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
     
-    function loadComments() {
-        console.log('[COMMENT] Loading comments for product ID:', productId);
-        
-        // Gọi API lấy danh sách bình luận qua proxy
-        fetch(`/api/proxy-comments/${productId}`)
-            .then(response => {
-                console.log('[COMMENT] Comments API Response status:', response.status);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
+    function loadComments(page = 1) {
+        fetch(`/api/proxy-binhluan/${productId}/${page}`)
+            .then(response => response.json())
             .then(data => {
-                console.log('[COMMENT] Comments data:', data);
-                if (data && data.data) {
-                    commentsData = data.data;
-                    console.log('[COMMENT] Found', commentsData.length, 'comments');
-                    updateCommentsCount();
-                    renderComments();
+                // Dữ liệu là một mảng, lấy phần tử đầu tiên và trường data
+                if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0].data)) {
+                    commentsData = data[0].data;
                 } else {
-                    console.log('[COMMENT] No comments data found');
                     commentsData = [];
-                    updateCommentsCount();
-                    renderComments();
                 }
+                updateCommentsCount();
+                renderComments();
             })
             .catch(error => {
-                console.error('Lỗi khi tải bình luận:', error);
                 commentsData = [];
                 updateCommentsCount();
                 renderComments();
