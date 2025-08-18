@@ -83,7 +83,7 @@
                     </p>
                     <p>
                         <i class="bi bi-envelope me-2"></i>
-                        <a href="mailto:info@choixanh.vn">info@thanhdo.vn</a>
+                        <a href="mailto:info@choixanh.vn">info:@chungchung102</a>
                     </p>
                 </div>
 

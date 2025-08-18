@@ -38,7 +38,7 @@
         </div>
     </form>
 
-    @if (!empty($filters))
+    @if (!empty($filters) && !empty($categoryId))
         <form id="filters-form" action="{{ route('filters.apply') }}" method="POST" class="needs-validation" novalidate>
             @csrf
             <input type="hidden" name="category" value="{{ $categoryId }}">
@@ -46,21 +46,21 @@
                 @foreach ($filters as $group)
                     <div class="filter-group">
                         <h3 data-bs-toggle="collapse" 
-                            data-bs-target="#filters-{{ $group['IDParentFilter'] }}"
+                            data-bs-target="#filters-{{ $group['id'] }}"
                             aria-expanded="true" 
-                            aria-controls="filters-{{ $group['IDParentFilter'] }}">
-                            {{ $group['FilterParentName'] }}
+                            aria-controls="filters-{{ $group['id'] }}">
+                            {{ $group['tieude'] }}
                         </h3>
-                        <div class="collapse show" id="filters-{{ $group['IDParentFilter'] }}">
+                        <div class="collapse show" id="filters-{{ $group['id'] }}">
                             @foreach ($group['details'] as $filter)
                                 <div class="form-check">
                                     <input class="form-check-input" 
                                            type="checkbox" 
-                                           name="filters[{{ $group['IDParentFilter'] }}][]" 
-                                           id="filter-{{ $filter['IDFilter'] }}" 
-                                           value="{{ $filter['IDFilter'] }}" 
-                                           data-alias="{{ $filter['AlilasPath'] }}">
-                                    <label class="form-check-label" for="filter-{{ $filter['IDFilter'] }}">{{ $filter['FilterName'] }}</label>
+                                           name="filters[{{ $group['id'] }}][]" 
+                                           id="filter-{{ $filter['ma'] }}" 
+                                           value="{{ $filter['ma'] }}" 
+                                           data-alias="{{ $filter['url'] }}">
+                                    <label class="form-check-label" for="filter-{{ $filter['ma'] }}">{{ $filter['tengoi'] }}</label>
                                 </div>
                             @endforeach
                         </div>
@@ -71,7 +71,7 @@
             <a href="{{ route('products.index') }}" class="btn btn-secondary">Tiếp tục mua sắm</a>
         </form>
     @elseif ($categoryId)
-        <p class="text-center">Không có bộ lọc nào!</p>
+        <p class="text-center">Không có bộ lọc nào cho danh mục này!</p>
     @endif
 </div>
 @endsection
@@ -92,3 +92,4 @@
         });
     })();
 </script>
+@endsection

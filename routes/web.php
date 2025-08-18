@@ -28,6 +28,7 @@ Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
 
 // Bộ lọc sản phẩm
 Route::get('/loc-san-pham', [FilterController::class, 'showFilter'])->name('products.filter');
+Route::get('/filters/results', [FilterController::class, 'results'])->name('filters.results');
 Route::get('/filters', [FilterController::class, 'index'])->name('filters.index');
 Route::post('/filters/apply', [FilterController::class, 'apply'])->name('filters.apply');
 
