@@ -40,12 +40,13 @@ Route::post('/cart/update', [CartController::class, 'update'])->name('cart.updat
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
 // Thanh toán
-Route::get('/payment', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
-Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+Route::get('/payment', [PaymentController::class, 'showPaymentForm'])->name('payment.form')->middleware('session.auth');
+Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process')->middleware('session.auth');
+Route::get('/purchase-history', [OrderHistoryController::class, 'index'])->name('cart.history')->middleware('session.auth');
 
 // Lịch sử đơn hàng
-Route::get('/purchase-history', [OrderHistoryController::class, 'index'])->name('cart.history')->middleware('auth');
-Route::post('/orders/cancel', [OrderCancelController::class, 'cancel'])->name('orders.cancel')->middleware('auth');
+Route::get('/purchase-history', [OrderHistoryController::class, 'index'])->name('cart.history')->middleware('session.auth');
+Route::post('/orders/cancel', [OrderCancelController::class, 'cancel'])->name('orders.cancel')->middleware('session.auth');
 
 // Liên hệ
 Route::get('/lien-he', [ContactController::class, 'show'])->name('lien-he');

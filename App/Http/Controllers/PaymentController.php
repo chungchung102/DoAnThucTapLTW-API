@@ -128,20 +128,30 @@ class PaymentController extends Controller
             return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống.');
         }
 
-        // 3. Xử lý đơn hàng (ở đây chỉ giả lập thành công, không gọi API)
-         try {
-            // Có thể lưu đơn hàng vào DB tại đây nếu muốn
+        // 3. Tạo đơn hàng mới
+        $order = [
+            'order_id' => uniqid('order_'),
+            'created_at' => now(),
+            'total' => array_sum(array_map(fn($item) => $item['gia'] * $item['quantity'], $cart)),
+            'status' => 0,
+            'payment_data' => [
+                'full_name' => $request->input('full_name'),
+                'email' => $request->input('email'),
+                'sdt' => $request->input('sdt'),
+                'address' => $request->input('address'),
+            ],
+            'items' => $cart,
+        ];
 
-            // Xóa giỏ hàng sau khi đặt thành công
-            $request->session()->forget('cart');
+        // Lưu vào session order_history
+        $history = session('order_history', []);
+        $history[] = $order;
+        session(['order_history' => $history]);
 
-            // Thông báo thành công (sửa route về trang chủ)
-            return redirect()->route('payment.form')->with('success', 
-                '✔Cám ơn đã đặt hàng!<br>Đơn đặt hàng đã được chuyển đi, chúng tôi sẽ liên hệ với quý khách sớm nhất.<br>Vui lòng click <a href="'.url('/').'">vào đây</a> về trang chủ'
-            );
-        } catch (\Exception $e) {
-            Log::error('Lỗi đặt hàng: '.$e->getMessage());
-            return redirect()->back()->with('error', 'Đặt hàng thất bại. Vui lòng thử lại sau!');
-        }
+        // Xóa giỏ hàng
+        $request->session()->forget('cart');
+
+        // Chuyển sang trang lịch sử đơn hàng
+        return redirect()->route('cart.history')->with('success', '✔Cám ơn đã đặt hàng! Đơn hàng đã được chuyển đi.');
     }
 }
