@@ -294,56 +294,72 @@
     
 </script>
 
-<!-- ===== BÌNH LUẬN SECTION ===== -->
-<div class="comments-section" id="comments-section" style="display: none;">
-    <div class="container mt-5">
-        <h3 class="text-gold mb-4">Bình luận sản phẩm</h3>
-        
-        <!-- Form thêm bình luận -->
-        <div class="comment-form mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <form id="comment-form">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="comment-name" class="form-label">Họ và tên *</label>
-                                <input type="text" class="form-control" id="comment-name" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="comment-rating" class="form-label">Đánh giá *</label>
-                                <div class="rating-input">
-                                    <div class="stars" id="rating-stars">
-                                        <span class="star" data-value="1">★</span>
-                                        <span class="star" data-value="2">★</span>
-                                        <span class="star" data-value="3">★</span>
-                                        <span class="star" data-value="4">★</span>
-                                        <span class="star" data-value="5">★</span>
-                                    </div>
-                                    <input type="hidden" id="comment-rating" value="5">
+ <!-- ===== BÌNH LUẬN SECTION ===== -->
+    <div class="comments-section" id="comments-section" style="display: none;">
+        <div class="container mt-5">
+            <h3 class="text-gold mb-4">Bình luận sản phẩm</h3>
+            
+            <!-- Form thêm bình luận -->
+            <div class="comment-form mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="comment-form">
+                            @csrf
+<input type="hidden" id="product-id" value="{{ $product['id'] }}">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="comment-name" class="form-label">Họ và tên *</label>
+                                    <input type="text" class="form-control" id="comment-name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="comment-email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="comment-email" required>
                                 </div>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="comment-content" class="form-label">Nội dung bình luận *</label>
-                            <textarea class="form-control" id="comment-content" rows="4" placeholder="Nhập nội dung bình luận..." required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-warning">Bình luận</button>
-                    </form>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="comment-phone" class="form-label">Điện thoại</label>
+                                    <input type="tel" class="form-control" id="comment-phone">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="comment-rating" class="form-label">Đánh giá *</label>
+                                    <div class="rating-input">
+                                        <div class="stars" id="rating-stars">
+                                            <span class="star" data-value="1">★</span>
+                                            <span class="star" data-value="2">★</span>
+                                            <span class="star" data-value="3">★</span>
+                                            <span class="star" data-value="4">★</span>
+                                            <span class="star" data-value="5">★</span>
+                                        </div>
+                                        <input type="hidden" id="comment-rating" value="5">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="comment-content" class="form-label">Nội dung bình luận *</label>
+                                <textarea class="form-control" id="comment-content" rows="4" placeholder="Nhập nội dung bình luận..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-warning">Gửi bình luận</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Danh sách bình luận -->
-        <div class="comments-list">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="fw-bold" id="comments-count">0 bình luận</span>
-                <select class="form-select" style="width: auto;" id="comments-sort">
-                    <option value="newest">Mới nhất</option>
-                    <option value="oldest">Cũ nhất</option>
-                </select>
-            </div>
-            <div id="comments-container">
-                <!-- Comments sẽ được load bằng JS -->
+            <!-- Danh sách bình luận -->
+            <div class="comments-list">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="fw-bold" id="comments-count">0 bình luận</span>
+                    <select class="form-select" style="width: auto;" id="comments-sort">
+                        <option value="newest">Mới nhất</option>
+                        <option value="oldest">Cũ nhất</option>
+                    </select>
+                </div>
+                <div id="comments-container">
+                    <!-- Comments sẽ được load bằng JS -->
+                </div>
+                <div class="text-center mt-3">
+                    <button id="load-more-btn" class="btn btn-outline-secondary" style="display: none;">Xem thêm bình luận</button>
+                </div>
             </div>
         </div>
     </div>
@@ -353,16 +369,20 @@
 .comments-section {
     background-color: #f8f9fa;
     padding: 2rem 0;
+    margin-top: 2rem;
+    border-top: 1px solid #eee;
 }
 
 .rating-input .stars {
     font-size: 1.5rem;
     color: #ddd;
+    display: inline-block;
 }
 
 .rating-input .star {
     cursor: pointer;
     transition: color 0.2s;
+    display: inline-block;
 }
 
 .rating-input .star:hover,
@@ -376,6 +396,7 @@
     padding: 1rem;
     margin-bottom: 1rem;
     border-left: 4px solid #d4a017;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .comment-header {
@@ -398,11 +419,13 @@
 .comment-rating {
     color: #ffc107;
     font-size: 0.9rem;
+    margin-left: 0.5rem;
 }
 
 .comment-content {
     color: #333;
     line-height: 1.6;
+    white-space: pre-line;
 }
 
 .like-button {
@@ -414,6 +437,9 @@
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .like-button:hover {
@@ -425,69 +451,113 @@
     color: #d4a017;
     background-color: #fff8e1;
 }
+
+.comment-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+#load-more-btn {
+    transition: all 0.3s;
+}
+
+#load-more-btn:hover {
+    background-color: #d4a017;
+    color: white;
+    border-color: #d4a017;
+}
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var productId = parseInt('{{ $product["id"] ?? "0" }}') || 0;
-    var commentsData = [];
+    const productId = parseInt('{{ $product["id"] ?? "0" }}') || 0;
+    let commentsData = [];
+    let currentPage = 1;
+    let totalPages = 1;
+    let isLoading = false;
     
-    // Check product comment settings and load comments
+    // Kiểm tra và tải bình luận
     checkAndLoadComments();
     
     function checkAndLoadComments() {
         console.log('[COMMENT] Checking product settings for ID:', productId);
         
-        // Gọi API kiểm tra cài đặt sản phẩm qua proxy
+        // Ẩn section bình luận mặc định
+        document.getElementById('comments-section').style.display = 'none';
+        
+        // Giả định sản phẩm cho phép bình luận (trong thực tế cần gọi API kiểm tra)
+        // Bạn có thể bỏ comment đoạn code sau nếu muốn kiểm tra qua API
+        
         fetch(`/api/proxy-product-info/${productId}`)
             .then(response => {
-                console.log('[COMMENT] API Response status:', response.status);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 return response.json();
             })
             .then(data => {
-                console.log('[COMMENT] Product info data:', data);
                 if (data && data.length > 0) {
                     const productInfo = data[0];
                     const allowComments = productInfo.chophepbinhluan === "True";
                     const showComments = productInfo.hienthibinhluan === "True";
                     
-                    console.log('[COMMENT] Allow comments:', allowComments, 'Show comments:', showComments);
-                    
-                    // Chỉ hiển thị section bình luận nếu cả 2 điều kiện đều true
                     if (allowComments && showComments) {
-                        console.log('[COMMENT] Showing comments section');
                         document.getElementById('comments-section').style.display = 'block';
                         loadComments();
-                    } else {
-                        console.log('[COMMENT] Comments not enabled for this product');
                     }
                 }
             })
             .catch(error => {
                 console.error('Lỗi khi kiểm tra cài đặt bình luận:', error);
             });
+        
+        
+        // Tạm thời hiển thị luôn section bình luận để test
+        document.getElementById('comments-section').style.display = 'block';
+        loadComments();
     }
     
     function loadComments(page = 1) {
+        if (isLoading) return;
+        
+        isLoading = true;
+        showLoadingIndicator(true);
+        
         fetch(`/api/proxy-binhluan/${productId}/${page}`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
             .then(data => {
-                // Dữ liệu là một mảng, lấy phần tử đầu tiên và trường data
-                if (Array.isArray(data) && data.length > 0 && Array.isArray(data[0].data)) {
-                    commentsData = data[0].data;
-                } else {
-                    commentsData = [];
+                // Xử lý dữ liệu trả về từ API
+                if (Array.isArray(data) && data.length > 0) {
+                    const responseData = data[0];
+                    
+                    if (Array.isArray(responseData.data)) {
+                        if (page === 1) {
+                            commentsData = responseData.data;
+                        } else {
+                            commentsData = [...commentsData, ...responseData.data];
+                        }
+                        
+                        totalPages = parseInt(responseData.total_pages) || 1;
+                        currentPage = page;
+                        
+                        updateCommentsCount();
+                        renderComments();
+                        
+                        // Hiển thị nút "Xem thêm" nếu còn trang
+                        const loadMoreBtn = document.getElementById('load-more-btn');
+                        loadMoreBtn.style.display = currentPage < totalPages ? 'inline-block' : 'none';
+                    }
                 }
-                updateCommentsCount();
-                renderComments();
             })
             .catch(error => {
-                commentsData = [];
-                updateCommentsCount();
-                renderComments();
+                console.error('Error loading comments:', error);
+                showError('Đã có lỗi xảy ra khi tải bình luận. Vui lòng thử lại sau.');
+            })
+            .finally(() => {
+                isLoading = false;
+                showLoadingIndicator(false);
             });
     }
     
@@ -508,51 +578,154 @@ document.addEventListener('DOMContentLoaded', function() {
             sortedComments.sort((a, b) => new Date(a.ngaydang) - new Date(b.ngaydang));
         }
         
-        container.innerHTML = '';
+        // Nếu là trang đầu tiên, xóa hết nội dung cũ
+        if (currentPage === 1) {
+            container.innerHTML = '';
+        }
         
-        sortedComments.forEach(comment => {
-            const commentHtml = `
-                <div class="comment-item">
-                    <div class="comment-header">
-                        <div>
-                            <span class="comment-author">${comment.nguoidang}</span>
-                            <span class="comment-rating">${'★'.repeat(Math.floor(comment.rating / 20))}</span>
-                        </div>
-                        <span class="comment-date">${formatDate(comment.ngaydang)}</span>
-                    </div>
-                    <div class="comment-content">
-                        ${comment.noidungbinhluan}
-                    </div>
-                    <div class="comment-actions mt-2">
-                        <button class="like-button" onclick="likeComment('${comment.id}')">
-                            <i class="bi bi-hand-thumbs-up"></i> Like ${comment.soluongthich || 1}
-                        </button>
-                        <button class="like-button ms-2" onclick="replyComment('${comment.id}')">
-                            <i class="bi bi-reply"></i> Trả lời
-                        </button>
-                    </div>
-                </div>
-            `;
-            container.innerHTML += commentHtml;
+        // Thêm comments mới
+        sortedComments.slice((currentPage - 1) * 10, currentPage * 10).forEach(comment => {
+            const commentHtml = createCommentHtml(comment);
+            container.insertAdjacentHTML('beforeend', commentHtml);
+        });
+        
+        // Gắn sự kiện like cho các comment
+        document.querySelectorAll('.like-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const commentId = this.dataset.commentId;
+                likeComment(commentId, this);
+            });
         });
     }
     
+    function createCommentHtml(comment) {
+    // Lấy rating từ 0–100, ép kiểu và giới hạn đúng phạm vi
+    const rawRating = parseInt(comment.rating || 0);
+    const clampedRating = Math.max(0, Math.min(100, rawRating));
+    const ratingValue = clampedRating / 20; // chuyển thành 0–5
+    const roundedRating = Math.round(ratingValue * 2) / 2; // làm tròn nửa sao
+
+    let starsHtml = '';
+    const fullStars = Math.floor(roundedRating);
+    const hasHalfStar = roundedRating % 1 !== 0;
+    const emptyStars = 5 - Math.ceil(roundedRating);
+
+    for (let i = 0; i < fullStars; i++) starsHtml += '★';
+    if (hasHalfStar) starsHtml += '½';
+    for (let i = 0; i < emptyStars; i++) starsHtml += '☆';
+
+    const likeCount = parseInt(comment.soluongthich || 0);
+    const isLiked = localStorage.getItem(`liked_${comment.id}`) === 'true';
+
+    return `
+        <div class="comment-item" id="comment-${comment.id}">
+            <div class="comment-header">
+                <div>
+                    <span class="comment-author">${escapeHtml(comment.nguoidang || 'Ẩn danh')}</span>
+                    <span class="comment-rating">${starsHtml}</span>
+                </div>
+                <span class="comment-date">${formatDate(comment.ngaydang)}</span>
+            </div>
+            <div class="comment-content">
+                ${escapeHtml(comment.noidungbinhluan || '')}
+            </div>
+            <div class="comment-actions">
+                <button class="like-button ${isLiked ? 'liked' : ''}" data-comment-id="${comment.id}">
+                    <i class="bi bi-hand-thumbs-up${isLiked ? '-fill' : ''}"></i> 
+                    Thích (${likeCount})
+                </button>
+            </div>
+        </div>
+    `;
+    }
+    
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+    
     function formatDate(dateString) {
+        if (!dateString) return '';
+        
         const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '';
+        
         const now = new Date();
         const diffTime = Math.abs(now - date);
         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
         
         if (diffDays === 0) {
             return 'hôm nay';
+        } else if (diffDays === 1) {
+            return 'hôm qua';
         } else if (diffDays < 7) {
             return `cách đây ${diffDays} ngày`;
         } else {
-            return date.toLocaleDateString('vi-VN');
+            return date.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
         }
     }
     
-    // Rating stars functionality
+    // Xử lý like comment
+    function likeComment(commentId, buttonElement) {
+        if (!commentId || !buttonElement) return;
+
+        if (localStorage.getItem(`liked_${commentId}`) === 'true') {
+            showError('Bạn đã thích bình luận này rồi');
+            return;
+        }
+
+        fetch('/api/proxy-save-binhluan-thich', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                id: productId,
+                id2: commentId
+            })
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (Array.isArray(result) && result.length > 0) {
+                const res = result[0];
+                if (res.maloi === '1') {
+                    localStorage.setItem(`liked_${commentId}`, 'true');
+                    const newLikeCount = parseInt(res.soluongthich || 1);
+
+                    // Cập nhật giao diện nút like
+                    buttonElement.classList.add('liked');
+                    buttonElement.innerHTML = `
+                        <i class="bi bi-hand-thumbs-up-fill"></i> Thích (${newLikeCount})
+                    `;
+
+                    // Cập nhật dữ liệu trong commentsData nếu có
+                    const comment = commentsData.find(c => c.id == commentId);
+                    if (comment) {
+                        comment.soluongthich = newLikeCount;
+                    }
+
+                    showSuccess('Bạn đã thích bình luận này!');
+                } else {
+                    showError(res.ThongBao || 'Không thể thích bình luận.');
+                }
+            } else {
+                showError('Phản hồi không hợp lệ từ máy chủ.');
+            }
+        })
+        .catch(() => {
+            showError('Đã xảy ra lỗi khi gửi yêu cầu.');
+        });
+    }
+    
+    // Xử lý rating stars
     const stars = document.querySelectorAll('.star');
     const ratingInput = document.getElementById('comment-rating');
     
@@ -597,42 +770,195 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set default 5 stars
     stars.forEach(star => star.classList.add('active'));
     
-    // Comment form submission
+    // Xử lý gửi bình luận mới
     document.getElementById('comment-form').addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const name = document.getElementById('comment-name').value;
+        const name = document.getElementById('comment-name').value.trim();
+        const email = document.getElementById('comment-email').value.trim();
+        const phone = document.getElementById('comment-phone').value.trim();
         const rating = document.getElementById('comment-rating').value;
-        const content = document.getElementById('comment-content').value;
+        const content = document.getElementById('comment-content').value.trim();
+        const productId = document.getElementById('product-id').value;
         
-        if (!name || !content) {
-            alert('Vui lòng điền đầy đủ thông tin!');
+        if (!name || !email || !content) {
+            showError('Vui lòng điền đầy đủ thông tin bắt buộc (Họ tên, Email, Nội dung)');
             return;
         }
         
-        // TODO: Gửi API tạo bình luận mới
-        console.log('Gửi bình luận:', { name, rating, content, productId });
-        alert('Cảm ơn bạn đã bình luận! Bình luận sẽ được duyệt trước khi hiển thị.');
+        if (!validateEmail(email)) {
+            showError('Email không hợp lệ');
+            return;
+        }
         
-        // Reset form
-        this.reset();
-        ratingInput.value = 5;
-        stars.forEach(star => star.classList.add('active'));
+        // Chuẩn bị dữ liệu gửi đi
+        const formData = new FormData();
+        formData.append('id', productId);
+        formData.append('tenkh', name);
+        formData.append('txtemail', email);
+        formData.append('txtdienthoai', phone);
+        formData.append('noidungtxt', content);
+        formData.append('id2', rating * 20); // Chuyển rating từ 1-5 sang 20-100
+        
+        // Hiển thị trạng thái loading
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang gửi...';
+        
+        // Gửi bình luận
+        fetch('/api/proxy-save-binhluan', {
+            method: 'POST',
+            body: new URLSearchParams(formData),
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+                const result = data[0];
+                
+                if (result.maloi === '00') {
+                    // Gửi thành công
+                    showSuccess('Bình luận của bạn đã được gửi và đang chờ duyệt!');
+                    document.getElementById('comment-form').reset();
+                    ratingInput.value = 5;
+                    stars.forEach(star => star.classList.add('active'));
+
+                    // RESET lại dữ liệu cũ
+                    commentsData = [];
+                    currentPage = 1;
+                    loadComments();
+                } else {
+                    showError(result.ThongBao || 'Có lỗi xảy ra khi gửi bình luận');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting comment:', error);
+            showError('Đã có lỗi xảy ra khi gửi bình luận. Vui lòng thử lại sau.');
+        })
+        .finally(() => {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Gửi bình luận';
+        });
     });
     
-    // Sort change handler
-    document.getElementById('comments-sort').addEventListener('change', renderComments);
+    // Sắp xếp bình luận
+    document.getElementById('comments-sort').addEventListener('change', function() {
+        currentPage = 1;
+        renderComments();
+    });
+    
+    // Xem thêm bình luận
+    document.getElementById('load-more-btn').addEventListener('click', function() {
+        if (currentPage < totalPages) {
+            loadComments(currentPage + 1);
+        }
+    });
+    
+    // Helper functions
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+    
+    function showLoadingIndicator(show) {
+        // Có thể thêm loading indicator nếu cần
+    }
+    
+    function showSuccess(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-success alert-dismissible fade show';
+        alertDiv.setAttribute('role', 'alert');
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        const container = document.getElementById('comments-section');
+        container.insertBefore(alertDiv, container.firstChild);
+        
+        setTimeout(() => {
+            alertDiv.classList.remove('show');
+            setTimeout(() => alertDiv.remove(), 150);
+        }, 3000);
+    }
+    
+    function showError(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-danger alert-dismissible fade show';
+        alertDiv.setAttribute('role', 'alert');
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        const container = document.getElementById('comments-section');
+        container.insertBefore(alertDiv, container.firstChild);
+        
+        setTimeout(() => {
+            alertDiv.classList.remove('show');
+            setTimeout(() => alertDiv.remove(), 150);
+        }, 3000);
+    }
 });
 
-// Global functions for comment actions
-function likeComment(commentId) {
-    console.log('Like comment:', commentId);
-    // TODO: Implement like functionality
-}
+// Global functions
+window.likeComment = function(commentId, buttonElement) {
+    const event = new Event('click');
+    buttonElement.dispatchEvent(event);
+};
 
-function replyComment(commentId) {
-    console.log('Reply to comment:', commentId);
-    // TODO: Implement reply functionality
+function likeComment(commentId) {
+    const buttonElement = document.querySelector(`.like-button[data-comment-id="${commentId}"]`);
+    if (!buttonElement || localStorage.getItem(`liked_${commentId}`) === 'true') return;
+
+    // Nếu có userid/pass thì truyền vào, nếu không thì bỏ qua
+    const formData = new FormData();
+    formData.append('id', commentId);
+    if (typeof userid !== 'undefined') formData.append('userid', userid);
+    if (typeof pass !== 'undefined') formData.append('pass', pass);
+
+    fetch('/api/proxy-save-binhluan-thich', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (Array.isArray(result) && result.length > 0) {
+            const res = result[0];
+            if (res.maloi === "1") {
+                localStorage.setItem(`liked_${commentId}`, 'true');
+                // Cập nhật giao diện nút Thích
+                if (buttonElement) {
+                    const newLikeCount = parseInt(res.soluongthich || 1);
+                    buttonElement.classList.add('liked');
+                    buttonElement.innerHTML = `
+                        <i class="bi bi-hand-thumbs-up-fill"></i> Thích (${newLikeCount})
+                    `;
+                }
+                // Cập nhật mảng commentsData nếu có
+                if (typeof commentsData !== 'undefined') {
+                    const comment = commentsData.find(c => c.id == commentId);
+                    if (comment) comment.like = parseInt(res.soluongthich || 1);
+                }
+                showSuccess('Bạn đã thích bình luận này!');
+            } else {
+                showError(res.ThongBao || 'Không thể thích bình luận.');
+            }
+        } else {
+            showError('Phản hồi không hợp lệ từ máy chủ.');
+        }
+    })
+    .catch(() => {
+        showError('Đã xảy ra lỗi khi gửi yêu cầu.');
+    });
 }
 </script>
 

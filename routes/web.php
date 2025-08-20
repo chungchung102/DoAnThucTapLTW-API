@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderCancelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
 
 // Trang chủ và sản phẩm
 Route::get('/', [ProductController::class, 'index'])->name('products.index');
@@ -147,13 +148,71 @@ Route::get('/api/proxy-product-info/{id}', function($id) {
         ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 });
 
-Route::get('/api/proxy-binhluan/{id}/{page?}', function($id, $page = 1) {
-    $apiUrl = "http://demodienmay.125.atoz.vn/ww2/binhluan.pc.asp?id={$id}&txtloai=desc&pageid={$page}";
-    $res = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])->get($apiUrl);
+// Lấy danh sách bình luận (GET)
+Route::get('/api/proxy-binhluan/{id}/{page?}', function ($id, $page = 1) {
+    $apiUrl = "https://demodienmay.125.atoz.vn/ww2/binhluan.pc.asp?id={$id}&page={$page}";
+    $res = Http::withOptions(['verify' => false])->get($apiUrl);
     return response($res->body(), $res->status())
         ->header('Content-Type', 'application/json')
         ->header('Access-Control-Allow-Origin', '*');
 });
+
+// Gửi bình luận mới (POST)
+Route::post('/api/proxy-save-binhluan', function (Request $request) {
+    $id     = $request->input('id');
+    $userid = $request->input('userid', '');
+    $pass   = $request->input('pass', '');
+
+    if (!$id) {
+        return response()->json([
+            ['ThongBao' => 'Thiếu ID sản phẩm', 'maloi' => '99']
+        ], 400);
+    }
+
+    // Truyền ID, userid, pass qua query string (URL)
+    $apiUrl = "https://demodienmay.125.atoz.vn/ww1/save.binhluan.asp?userid={$userid}&pass={$pass}&id={$id}";
+
+    // Gửi phần còn lại qua form POST (x-www-form-urlencoded)
+    $payload = [
+        'tenkh'        => $request->input('tenkh'),
+        'txtemail'     => $request->input('txtemail'),
+        'txtdienthoai' => $request->input('txtdienthoai'),
+        'noidungtxt'   => $request->input('noidungtxt'),
+        'id2'          => $request->input('id2', 100),
+        'id3'          => $request->input('id3', '/dist/images/user.jpg')
+    ];
+
+    $res = Http::asForm()
+        ->withOptions(['verify' => false])
+        ->post($apiUrl, $payload);
+
+    return response($res->body(), $res->status())
+        ->header('Content-Type', 'application/json')
+        ->header('Access-Control-Allow-Origin', '*');
+})->middleware('api'); // Thêm dòng này
+
+// Like bình luận (POST)
+
+Route::post('/api/proxy-save-binhluan-thich', function (Request $request) {
+    $apiUrl = "https://demodienmay.125.atoz.vn/ww1/save.binhluan.thich.asp";
+
+    $payload = [
+        'id'  => $request->input('id'),
+        'id2' => $request->input('id2'),
+    ];
+
+    if (!$payload['id'] || !$payload['id2']) {
+        return response()->json([
+            ['ThongBao' => 'Thiếu ID sản phẩm hoặc ID bình luận', 'maloi' => '99']
+        ], 400);
+    }
+
+    $res = Http::asForm()->withOptions(['verify' => false])->post($apiUrl, $payload);
+
+    return response($res->body(), $res->status())
+        ->header('Content-Type', 'application/json')
+        ->header('Access-Control-Allow-Origin', '*');
+})->middleware('api'); // Thêm dòng này
 
 // Route OPTIONS cho tất cả proxy endpoint (nếu cần)
 Route::options('/api/{any}', function () {
@@ -162,3 +221,14 @@ Route::options('/api/{any}', function () {
         ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
         ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 })->where('any', '.*');
+
+// Proxy route cho module.sanpham.asp để tránh lỗi CORS
+Route::get('/api/proxy-sanpham/{id}', function($id) {
+    $apiUrl = "https://demodienmay.125.atoz.vn/ww2/module.sanpham.asp?id={$id}";
+    $res = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])->get($apiUrl);
+    return response($res->body(), $res->status())
+        ->header('Content-Type', 'application/json')
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+})->middleware('api'); // Thêm dòng này
