@@ -66,8 +66,10 @@ class WishlistController extends Controller
 
         $response = Http::get($apiUrl);
         $json = $response->json();
-        $thongbao = isset($json['thongbao']) ? strip_tags($json['thongbao']) : 'Đã thêm vào yêu thích!';
-        return redirect()->back()->with('success', $thongbao);
+         if ($request->ajax()) {
+        return response()->json(['success' => true]);
+        }
+        return redirect()->back()->with('success', 'Đã thêm vào yêu thích!');
     }
 
     public function remove(Request $request, $id)

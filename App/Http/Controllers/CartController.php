@@ -16,8 +16,9 @@ class CartController extends Controller
         $this->cartService = $cartService;
     }
 
-   public function add($productId, Request $request)
+   public function add(Request $request)
 {
+    $productId = $request->input('product_id');
     Log::info("Attempting to add product to cart", ['productId' => $productId]);
 
     if (!is_numeric($productId) || $productId <= 0) {
@@ -41,9 +42,10 @@ class CartController extends Controller
     $quantity = (int) $request->input('quantity', 1);
     $success = $this->cartService->addToCart($product, $quantity);
 
-    Log::info("Cart after adding", ['cart' => session('cart')]);
-
-    return redirect()->route('products.index')->with('success', 'Đã thêm sản phẩm vào giỏ hàng');
+    if ($request->ajax()) {
+        return response()->json(['success' => $success]);
+    }
+    return redirect()->back()->with('success', 'Đã thêm vào giỏ hàng!');
 }
 
 
@@ -72,10 +74,13 @@ class CartController extends Controller
 }
 
 
-   public function remove($productId)
+   public function remove($productId, Request $request)
 {
     $success = $this->cartService->removeFromCart($productId);
 
+    if ($request->ajax()) {
+        return response()->json(['success' => $success]);
+    }
     return redirect()->route('cart.view')->with(
         $success ? 'success' : 'error',
         $success ? 'Đã xóa sản phẩm khỏi giỏ hàng' : 'Không tìm thấy sản phẩm trong giỏ'
@@ -88,4 +93,13 @@ class CartController extends Controller
     return redirect()->route('cart.view')->with('success', 'Đã xóa toàn bộ giỏ hàng');
 }
 
+public function getCount(Request $request)
+{
+    $cart = session('cart', []);
+    $count = 0;
+    foreach ($cart as $item) {
+        $count += $item['quantity'] ?? 1;
+    }
+    return response()->json(['count' => $count]);
+}
 }

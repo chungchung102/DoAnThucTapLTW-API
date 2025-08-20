@@ -28,7 +28,7 @@ public function addToCart(array $product, int $quantity = 1): bool
     $cart[$productId] = [
         'tieude' => $product['tieude'],
         'gia' => $product['gia'] ?? 0,
-        'quantity' => ($cart[$productId]['quantity'] ?? 0) + $quantity,
+        'quantity' => $quantity, // <-- chỉ set quantity, không cộng dồn
         'hinhdaidien' => $product['hinhdaidien']
     ];
 

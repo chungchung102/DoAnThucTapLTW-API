@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 @section('title', $title)
 @section('content')
@@ -100,8 +99,8 @@
                                             </li>
                                         </ul>
                                         <div class="d-flex gap-2 mt-3">
-                                            <a href="{{ route('cart.add', $product['id']) }}" class="btn btn-gold flex-fill"><i class="bi bi-cart-plus me-3 fs-5"></i></i>Mua hàng</a>
-                                            <a href="{{ route('wishlist.add', $product['id']) }}" class="btn btn-success flex-fill"><i class="bi bi-heart-fill me-3 fs-5"></i>Yêu thích</a>
+                                            <button class="btn btn-gold btn-add-cart" data-id="{{ $product['id'] }}">Mua hàng</button>
+                                            <button class="btn btn-success flex-fill btn-add-wishlist" data-id="{{ $product['id'] }}">Yêu thích</button>
                                         </div>
                                     </div>
                                 </div>
@@ -299,7 +298,7 @@
             });
         }, 3000);
     });   
-    
+        
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {

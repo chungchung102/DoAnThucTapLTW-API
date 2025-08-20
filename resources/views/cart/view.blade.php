@@ -153,7 +153,7 @@
                 </thead>
                 <tbody>
                     @foreach ($cart as $id => $item)
-                        <tr>
+                        <tr id="row-cart-{{ $id }}">
                             <td>
                                 <div class="image-container">
                                     <img src="{{ $item['hinhdaidien'] ?? 'https://via.placeholder.com/300x200?text=No+Image' }}"
@@ -179,7 +179,7 @@
                                 <form action="{{ route('cart.remove', $id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger btn-sm" onclick="return confirm('Xoá sản phẩm này?')">
+                                    <button class="btn btn-danger btn-sm btn-remove-cart" data-id="{{ $id }}">
                                         <i class="bi bi-trash"></i> Xoá
                                     </button>
                                 </form>

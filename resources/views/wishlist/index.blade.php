@@ -45,7 +45,7 @@
                             <button class="btn btn-danger btn-sm btn-remove-wishlist" data-id="{{ $id }}">
                                 <i class="bi bi-trash"></i> Xoá
                             </button>
-                            <a href="{{ route('cart.add', $id) }}" class="btn btn-primary btn-sm mt-2">Mua hàng</a>
+                            <button class="btn btn-primary btn-sm mt-2 btn-buy-wishlist" data-id="{{ $id }}">Mua hàng</button>
                         </td>
                     </tr>
                 @endforeach

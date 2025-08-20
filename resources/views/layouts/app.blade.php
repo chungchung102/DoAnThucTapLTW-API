@@ -50,10 +50,10 @@
                 <div id="suggestions"></div>
                 <div class="navbar-nav ms-3 align-items-lg-center">
                     <a class="nav-link text-gold" href="/cart">
-                        <i class="bi bi-cart-check"></i> Giỏ hàng: {{ session('cart') ? count(session('cart')) : 0 }}
+                        <i class="bi bi-cart-check"></i> Giỏ hàng: <span id="cart-count">{{ $cartCount ?? 0 }}</span>
                     </a>
                     <a class="nav-link text-gold" href="/wishlist">
-                        <i class="bi bi-heart-fill"></i> Yêu thích: <span id="wishlist-count">0</span>
+                        <i class="bi bi-heart-fill"></i> Yêu thích: <span id="wishlist-count">{{ $wishlistCount ?? 0 }}</span>
                     </a>
                     @if (session('user_email'))
                         <div class="nav-item dropdown">
@@ -85,6 +85,7 @@
     @include('footer')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('js/cart.js') }}"></script>
     <script src="{{ asset('js/wishlist.js') }}"></script>
     <script src="{{ asset('js/product.js') }}"></script>
     <script>

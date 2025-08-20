@@ -35,10 +35,11 @@ Route::post('/filters/apply', [FilterController::class, 'apply'])->name('filters
 
 // Giỏ hàng
 Route::get('/cart', [CartController::class, 'view'])->name('cart.view');
-Route::get('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::get('/cart/add/{id}', [CartController::class, 'addByGet'])->name('cart.add.get');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::get('/cart/count', [CartController::class, 'getCount'])->name('cart.count');
 // Thanh toán
 Route::get('/payment', [PaymentController::class, 'showPaymentForm'])->name('payment.form')->middleware('session.auth');
 Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process')->middleware('session.auth');
