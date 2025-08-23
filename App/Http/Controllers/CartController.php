@@ -102,4 +102,10 @@ public function getCount(Request $request)
     }
     return response()->json(['count' => $count]);
 }
+
+public function getTotal(Request $request)
+{
+    $total = $this->cartService->getCartTotal();
+    return response()->json(['total' => $total]);
+}
 }

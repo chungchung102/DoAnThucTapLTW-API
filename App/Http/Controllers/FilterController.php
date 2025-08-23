@@ -60,36 +60,69 @@ class FilterController extends Controller
             }
         }
 
-        return view('filters.results', compact('products', 'categoryId', 'keyword', 'selectedFilters', 'categories'));
+        return view('filters.results', [
+            'products'        => $products,
+            'categoryId'      => $categoryId,
+            'selectedFilters' => $selectedFilters,
+            'categories'      => $categories, // <-- phải là mảng ID => ['tieude', 'url']
+        ]);
     }
+
+    
 
    private function getCategories()
     {
         try {
             $response = Http::get("https://demodienmay.125.atoz.vn/ww2/crm.boloc.danhmuc.asp");
             $master = $response->json();
-            
+
             $categories = [];
-            $allowedIds = ['35278', '35279','35283','35285','35280']; // Chỉ id tồn tại trong API, thêm nếu có (không có 35285 v.v. trong dữ liệu)
+            $allowedIds = ['35278', '35279', '35280', '35283', '35284', '35285'];
             foreach ($master as $cat) {
                 if (in_array($cat['id'], $allowedIds)) {
-                    $categories[$cat['id']] = $cat['tieude']; // Giữ tieude có dấu
-                    // Nếu muốn không dấu: $categories[$cat['id']] = Str::ascii($cat['tieude']);
+                    $categories[$cat['id']] = [
+                        'tieude' => $cat['tieude'],
+                        'url'    => $cat['url'],
+                    ];
                 }
             }
             return $categories;
         } catch (\Exception $e) {
             Log::error('getCategories: Gọi API thất bại', ['error' => $e->getMessage()]);
             return [
-                '35278' => 'Điện thoại',
-                '35279' => 'Máy tính',
-                '35285' => 'Máy Tính Bảng', // Dự phòng, dù không có trong API
-                '35284' => 'Màn hình máy tính',
-                '35283' => 'Máy lạnh',
-                '35280' => 'Ti Vi'
+                '35278' => ['tieude' => 'Điện thoại di động', 'url' => 'mua-ban-dien-thoai-di-dong'],
+                '35279' => ['tieude' => 'Máy vi tính', 'url' => 'mua-ban-may-tinh'],
+                '35280' => ['tieude' => 'Tivi', 'url' => 'tivi'],
+                '35283' => ['tieude' => 'Máy lạnh', 'url' => 'may-lanh'],
+                '35284' => ['tieude' => 'Màn hình máy tính', 'url' => 'man-hinh-may-tinh'],
+                '35285' => ['tieude' => 'Máy Tính Bảng', 'url' => 'may-tinh-bang'],
             ];
         }
     }
+    
+public function categorySlug($slug)
+{
+    $categories = $this->getCategories();
+    $categoryId = null;
+    foreach ($categories as $id => $cat) {
+        if ($cat['url'] === $slug) {
+            $categoryId = $id;
+            break;
+        }
+    }
+    if (!$categoryId) {
+        abort(404, 'Không tìm thấy danh mục');
+    }
+    $filters = $this->getFilters($categoryId);
+    // Lấy sản phẩm nếu cần...
+
+    return view('filters.index', [
+        'categories' => $categories,   // <-- BẮT BUỘC PHẢI TRUYỀN
+        'categoryId' => $categoryId,
+        'filters'    => $filters,
+        // 'products' => $products, // nếu có
+    ]);
+}
 
     private function getFilters($categoryId)
     {
@@ -127,9 +160,16 @@ class FilterController extends Controller
     private function mapProductsToView(array $items)
     {
         return array_map(function ($item_web) {
+            $url = $item_web['url'] ?? '';
+            if (empty($url) && !empty($item_web['id'])) {
+                // Lấy url từ API chi tiết nếu thiếu
+                $detail = app(\App\Services\ProductService::class)->fetchProductDetail($item_web['id']);
+                $url = $detail['url'] ?? '';
+            }
             return [
                 'id' => $item_web['id'] ?? null,
                 'tieude' => $item_web['tieude'] ?? '',
+                'url' => $url,
                 'hinhdaidien' => $item_web['hinhdaidien'] ?? '',
                 'thuonghieu' => $item_web['thuonghieu'] ?? [],
                 'kichcomanhinh' => $item_web['kichcomanhinh'] ?? [],
@@ -147,8 +187,8 @@ class FilterController extends Controller
                 'carddohoa' => $item_web['carddohoa'] ?? [],
                 'nhucau' => $item_web['nhucau'] ?? [],
                 'gia' => $item_web['gia'] ?? 0,
-                'giakhuyenmai' => $item_web['giakhuyenmai'] ?? 0
-            ];
+                'giakhuyenmai' => $item_web['giakhuyenmai'] ?? 0,
+                ];
         }, $items);
     }
 }

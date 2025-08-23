@@ -26,13 +26,15 @@
         </div>
     @endif
 
-    <form action="{{ route('filters.index') }}" method="GET" class="mb-5">
+    <form action="" method="GET" class="mb-5">
         <div class="mb-3">
             <label for="category" class="form-label">Chọn danh mục</label>
-            <select name="category" id="category" class="form-select" required onchange="this.form.submit()">
+            <select name="category" id="category" class="form-select" required onchange="if(this.value) window.location.href=this.value;">
                 <option value="">Chọn danh mục</option>
-                @foreach ($categories as $id => $name)
-                    <option value="{{ $id }}" {{ $categoryId == $id ? 'selected' : '' }}>{{ $name }}</option>
+                @foreach ($categories as $id => $cat)
+                    <option value="{{ route('category.slug', ['slug' => $cat['url']]) }}" {{ $categoryId == $id ? 'selected' : '' }}>
+                        {{ $cat['tieude'] }}
+                    </option>
                 @endforeach
             </select>
         </div>

@@ -14,9 +14,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
-
+Route::get('/test-log', function () {
+    Log::info('Test log route hit');
+    return 'Logged!';
+});
 // Trang chủ và sản phẩm
 Route::get('/', [ProductController::class, 'index'])->name('products.index');
+
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/search', [ProductController::class, 'search'])->name('products.search');
 Route::get('/products/suggestions', [ProductController::class, 'suggestions'])->name('products.suggestions');
@@ -40,6 +44,7 @@ Route::post('/cart/update', [CartController::class, 'update'])->name('cart.updat
 Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::get('/cart/count', [CartController::class, 'getCount'])->name('cart.count');
+Route::get('/cart/total', [CartController::class, 'getTotal']);
 // Thanh toán
 Route::get('/payment', [PaymentController::class, 'showPaymentForm'])->name('payment.form')->middleware('session.auth');
 Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process')->middleware('session.auth');
@@ -233,4 +238,10 @@ Route::get('/api/proxy-sanpham/{id}', function($id) {
         ->header('Access-Control-Allow-Origin', '*')
         ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
         ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-})->middleware('api'); // Thêm dòng này
+})->middleware('api'); // Thêm dòng này 
+
+Route::get('/danh-muc/{slug}', [FilterController::class, 'categorySlug'])->name('category.slug');
+Route::get('/{slug}', function($slug) {
+    Log::debug('Route /{slug} matched', ['slug' => $slug]);
+    return app(\App\Http\Controllers\ProductController::class)->showBySlug($slug);
+})->name('products.slug');

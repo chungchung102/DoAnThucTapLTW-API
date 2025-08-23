@@ -13,6 +13,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
+
 <div class="product-detail-page">
     <h1 class="text-gold">{{ $product['tieude'] ?? 'Không có tiêu đề' }}</h1>
     <div class="product-detail-container">
@@ -74,7 +75,7 @@
                             {{ collect($product['nhucau'] ?? [])->first()['tengoi'] ?? 'N/A' }}
                         </li>
                     @endif
-                      @if (isset($product['kichcomanhinh']))
+                    @if (isset($product['kichcomanhinh']))
                         <li><strong class="text-gold">Kích cỡ:</strong> 
                             {{ collect($product['kichcomanhinh'] ?? [])->first()['tengoi'] ?? 'N/A' }}
                         </li>
@@ -104,27 +105,27 @@
                             {{ collect($product['phanloai'] ?? [])->first()['tengoi'] ?? 'N/A' }}
                         </li>
                     @endif
-                      @if (isset($product['tinhnangdacbiet']))
+                    @if (isset($product['tinhnangdacbiet']))
                         <li><strong class="text-gold">Tính năng:</strong> 
                             {{ collect($product['tinhnangdacbiet'] ?? [])->first()['tengoi'] ?? 'N/A' }}
                         </li>
                     @endif
-                     @if (isset($product['hieunangvapin']))
+                    @if (isset($product['hieunangvapin']))
                         <li><strong class="text-gold">Hiệu năng:</strong> 
                             {{ collect($product['hieunangvapin'] ?? [])->first()['tengoi'] ?? 'N/A' }}
                         </li>
                     @endif
-                     @if (isset($product['bonhotrong']))
+                    @if (isset($product['bonhotrong']))
                         <li><strong class="text-gold">Bộ nhớ:</strong> 
                             {{ collect($product['bonhotrong'] ?? [])->first()['tengoi'] ?? 'N/A' }}
                         </li>
                     @endif
-                      @if (isset($product['tansoquet']))
+                    @if (isset($product['tansoquet']))
                         <li><strong class="text-gold">Tần số quét:</strong> 
                             {{ collect($product['tansoquet'] ?? [])->first()['tengoi'] ?? 'N/A' }}
                         </li>
                     @endif
-                     @if (isset($product['chipxuli']))
+                    @if (isset($product['chipxuli']))
                         <li><strong class="text-gold">Chip:</strong> 
                             {{ collect($product['chipxuli'] ?? [])->first()['tengoi'] ?? 'N/A' }}
                         </li>
@@ -164,7 +165,6 @@
                             {{ collect($product['camera'] ?? [])->first()['tengoi'] ?? 'N/A' }}
                         </li>
                     @endif
-                 
                     @if (isset($product['hedieuhanhtivi']))
                         <li><strong class="text-gold">Hệ điều hành:</strong> 
                             {{ collect($product['hedieuhanhtivi'] ?? [])->first()['tengoi'] ?? 'N/A' }}
@@ -175,7 +175,7 @@
                             {{ collect($product['congsuat'] ?? [])->first()['tengoi'] ?? 'N/A' }}
                         </li>
                     @endif
-                     @if (isset($product['congnghe']))
+                    @if (isset($product['congnghe']))
                         <li><strong class="text-gold">Công nghệ:</strong> 
                             {{ collect($product['congnghe'] ?? [])->first()['tengoi'] ?? 'N/A' }}
                         </li>
@@ -186,7 +186,7 @@
                 </ul>
             </div>
             <div class="product-actions mt-3">
-                <a href="{{ route('cart.add', $product['id']) }}" class="btn btn-success flex-fill"><i class="bi bi-cart-plus me-1"></i>Mua hàng</a>
+                <button class="btn btn-success flex-fill btn-add-cart" data-id="{{ $product['id'] }}"><i class="bi bi-cart-plus me-1"></i>Mua hàng</button>
                 <button class="btn-add-wishlist btn btn-outline-danger flex-fill" data-id="{{ $product['id'] }}">
                     <i class="bi bi-heart me-1"></i>Yêu thích
                 </button>
@@ -231,7 +231,7 @@
                                     </li>
                                 </ul>
                                 <div class="d-flex gap-2 mt-3">
-                                    <a href="{{ route('cart.add', $relatedProduct['id']) }}" class="btn btn-gold flex-fill">Mua hàng</a>
+                                    <button class="btn btn-success btn-add-cart" data-id="{{ $product['id'] }}">Mua hàng</button>
                                     <button class="btn-add-wishlist btn btn-outline-danger flex-fill" data-id="{{ $relatedProduct['id'] }}">
                                         <i class="bi bi-heart"></i> Yêu thích
                                     </button>
@@ -511,9 +511,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         
         
-        // Tạm thời hiển thị luôn section bình luận để test
-        document.getElementById('comments-section').style.display = 'block';
-        loadComments();
+        // // Tạm thời hiển thị luôn section bình luận để test
+        // document.getElementById('comments-section').style.display = 'block';
+        // loadComments();
     }
     
     function loadComments(page = 1) {

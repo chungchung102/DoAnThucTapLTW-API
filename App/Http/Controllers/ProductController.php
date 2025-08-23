@@ -114,9 +114,13 @@ public function show(Request $request, $id)
         abort(404, 'Không tìm thấy sản phẩm.');
     }
 
-    $category = $product['category'] ?? $fallbackCategory;
+    // Nếu có slug/url thì redirect sang URL SEO-friendly
+    if (!empty($product['url'])) {
+        return redirect('/' . $product['url']);
+    }
 
-    // Lấy sản phẩm cùng danh mục
+    // Nếu không có slug thì vẫn render như cũ (trường hợp hiếm)
+    $category = $product['category'] ?? $fallbackCategory;
     $relatedData = $this->productService->fetchData(50, 'product', $category);
 
     $relatedProducts = array_filter($relatedData['products'] ?? [], function ($p) use ($id) {
@@ -125,6 +129,28 @@ public function show(Request $request, $id)
 
     Log::debug('Danh mục sản phẩm hiện tại:', ['category' => $category]);
     Log::debug('Dữ liệu sản phẩm liên quan:', ['relatedProducts' => $relatedProducts]);
+
+    return view('products.show', [
+        'product' => $product,
+        'relatedProducts' => array_slice(array_values($relatedProducts), 0, 4),
+        'title' => $product['tieude'] ?? 'Chi tiết sản phẩm'
+    ]);
+}
+public function showBySlug($slug)
+{
+    Log::debug('showBySlug called', ['slug' => $slug]);
+    $product = app(\App\Services\ProductService::class)->fetchProductBySlug($slug);
+    if (!$product) abort(404, 'Không tìm thấy sản phẩm');
+
+    // Lấy sản phẩm liên quan cùng danh mục
+    $category = $product['category'] ?? null;
+    $relatedProducts = [];
+    if ($category) {
+        $relatedData = $this->productService->fetchData(50, 'product', $category);
+        $relatedProducts = array_filter($relatedData['products'] ?? [], function ($p) use ($product) {
+            return $p['id'] !== $product['id'] && !empty($p['hinhdaidien']) && strpos($p['hinhdaidien'], 'placeholder') === false;
+        });
+    }
 
     return view('products.show', [
         'product' => $product,

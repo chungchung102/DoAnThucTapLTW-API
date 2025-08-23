@@ -206,6 +206,11 @@ $(function(){
                 showCustomToast('Đã xóa khỏi giỏ hàng!');
                 if (typeof reloadCartCount === "function") reloadCartCount();
                 $('#row-cart-' + productId).remove();
+
+                // Thêm đoạn này để cập nhật tổng tiền
+                $.get('/cart/total', function(data){
+                    $('#cart-total').text(formatCurrency(data.total));
+                });
             },
             error: function(){
                 showCustomToast('Xóa khỏi giỏ hàng thất bại!');
@@ -233,3 +238,7 @@ $(function(){
         });
     });
 });
+
+function formatCurrency(amount) {
+    return amount.toLocaleString('vi-VN') + 'đ';
+}

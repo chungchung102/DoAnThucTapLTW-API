@@ -42,11 +42,12 @@ class ProductService
     protected function callRawPhpApi(string $endpoint)
     {
         try {
-            $response = Http::withHeaders([
-                'Accept' => 'application/json',
-                'User-Agent' => 'Laravel-Client',
-                'ngrok-skip-browser-warning' => 'true',
-            ])->timeout(15)->get($this->apiBase . $endpoint);
+            $response = Http::withOptions(['verify' => false])
+                ->withHeaders([
+                    'Accept' => 'application/json',
+                    'User-Agent' => 'Laravel-Client',
+                    'ngrok-skip-browser-warning' => 'true',
+                ])->timeout(15)->get($this->apiBase . $endpoint);
 
             if ($response->successful()) {
                 Log::info("API call successful", ['endpoint' => $endpoint, 'status' => $response->status()]);
@@ -313,4 +314,19 @@ class ProductService
         return true;
     }
     
+    public function fetchProductBySlug($slug)
+    {
+        foreach ($this->productIds as $cat => $catId) {
+            $result = $this->callRawPhpApi("module.sanpham.asp?id={$catId}&sl=1000");
+            if (!is_array($result) || !isset($result[0]['data'])) continue;
+            foreach ($result[0]['data'] as $item) {
+                Log::debug('Check product slug', ['item_url' => $item['url'], 'slug' => $slug]);
+                if (isset($item['url']) && $item['url'] === $slug) {
+                    return $this->fetchProductDetail($item['id']);
+                }
+            }
+        }
+        Log::warning('Product not found by slug', ['slug' => $slug]);
+        return null;
+    }
 }

@@ -176,13 +176,9 @@
                             </td>
                             <td>{{ number_format($item['gia'] * $item['quantity'], 0, ',', '.') }}đ</td>
                             <td>
-                                <form action="{{ route('cart.remove', $id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm btn-remove-cart" data-id="{{ $id }}">
-                                        <i class="bi bi-trash"></i> Xoá
-                                    </button>
-                                </form>
+                                <button class="btn btn-danger btn-sm btn-remove-cart" data-id="{{ $id }}">
+                                    <i class="bi bi-trash"></i> Xoá
+                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -190,7 +186,7 @@
             </table>
         </div>
 
-        <h4 class="total-price">Tổng cộng: {{ number_format($total, 0, ',', '.') }}đ</h4>
+        <h4 class="total-price">Tổng cộng: <span id="cart-total">{{ number_format($total, 0, ',', '.') }}đ</span></h4>
 
         <div class="text-center mt-4">
             <a href="{{ route('products.index') }}" class="btn btn-primary me-2">Tiếp tục mua sắm</a>
