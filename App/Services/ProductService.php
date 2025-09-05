@@ -314,19 +314,23 @@ class ProductService
         return true;
     }
     
-    public function fetchProductBySlug($slug)
-    {
-        foreach ($this->productIds as $cat => $catId) {
-            $result = $this->callRawPhpApi("module.sanpham.asp?id={$catId}&sl=1000");
-            if (!is_array($result) || !isset($result[0]['data'])) continue;
-            foreach ($result[0]['data'] as $item) {
-                Log::debug('Check product slug', ['item_url' => $item['url'], 'slug' => $slug]);
-                if (isset($item['url']) && $item['url'] === $slug) {
-                    return $this->fetchProductDetail($item['id']);
-                }
+public function fetchProductBySlug($slug)
+{
+    Log::debug('fetchProductBySlug called', ['slug' => $slug]);
+    foreach ($this->productIds as $cat => $catId) {
+        $result = $this->callRawPhpApi("module.sanpham.asp?id={$catId}&sl=1000");
+        Log::debug('API result', ['cat' => $cat, 'result' => $result]);
+        if (!is_array($result) || !isset($result[0]['data'])) continue;
+        foreach ($result[0]['data'] as $item) {
+            Log::debug('Check product slug', ['item_url' => $item['url'] ?? null, 'slug' => $slug]);
+            if (isset($item['url']) && $item['url'] === $slug) {
+                $product = $this->fetchProductDetail($item['id'], $cat);
+                $product['category'] = $cat;  // Đảm bảo category được gán
+                return $product;
             }
         }
-        Log::warning('Product not found by slug', ['slug' => $slug]);
-        return null;
     }
+    Log::warning('Product not found by slug', ['slug' => $slug]);
+    return null;
+}
 }

@@ -121,14 +121,15 @@ public function show(Request $request, $id)
 
     // Nếu không có slug thì vẫn render như cũ (trường hợp hiếm)
     $category = $product['category'] ?? $fallbackCategory;
-    $relatedData = $this->productService->fetchData(50, 'product', $category);
+    $relatedData = $this->productService->fetchData(100, 'product', $category);
 
+    // Sửa lại điều kiện lọc:
     $relatedProducts = array_filter($relatedData['products'] ?? [], function ($p) use ($id) {
-        return $p['id'] !== $id && !empty($p['hinhdaidien']) && strpos($p['hinhdaidien'], 'placeholder') === false;
+        return $p['id'] !== $id;
     });
 
     Log::debug('Danh mục sản phẩm hiện tại:', ['category' => $category]);
-    Log::debug('Dữ liệu sản phẩm liên quan:', ['relatedProducts' => $relatedProducts]);
+    Log::debug('Số sản phẩm liên quan sau khi lọc:', ['count' => count($relatedProducts)]);
 
     return view('products.show', [
         'product' => $product,
@@ -142,15 +143,35 @@ public function showBySlug($slug)
     $product = app(\App\Services\ProductService::class)->fetchProductBySlug($slug);
     if (!$product) abort(404, 'Không tìm thấy sản phẩm');
 
-    // Lấy sản phẩm liên quan cùng danh mục
-    $category = $product['category'] ?? null;
+    // Debug: Log thông tin sản phẩm
+    Log::debug('Product data in showBySlug:', [
+        'id' => $product['id'] ?? 'N/A',
+        'category' => $product['category'] ?? 'N/A',
+        'title' => $product['tieude'] ?? 'N/A'
+    ]);
+
+    // Lấy sản phẩm liên quan cùng danh mục - Sử dụng fallback category nếu cần
+    $category = $product['category'] ?? 'computer'; // Fallback to computer category
     $relatedProducts = [];
-    if ($category) {
-        $relatedData = $this->productService->fetchData(50, 'product', $category);
-        $relatedProducts = array_filter($relatedData['products'] ?? [], function ($p) use ($product) {
-            return $p['id'] !== $product['id'] && !empty($p['hinhdaidien']) && strpos($p['hinhdaidien'], 'placeholder') === false;
-        });
-    }
+    
+    $relatedData = $this->productService->fetchData(100, 'product', $category);
+    
+    // Debug: Log dữ liệu raw
+    Log::debug('Related data raw:', [
+        'category' => $category,
+        'products_count' => count($relatedData['products'] ?? [])
+    ]);
+    
+    // Nới lỏng điều kiện lọc
+    $relatedProducts = array_filter($relatedData['products'] ?? [], function ($p) use ($product) {
+        return $p['id'] !== $product['id'];
+    });
+    
+    // Debug: Log kết quả sau lọc
+    Log::debug('Filtered related products:', [
+        'count' => count($relatedProducts),
+        'sample_titles' => array_slice(array_column($relatedProducts, 'tieude'), 0, 3)
+    ]);
 
     return view('products.show', [
         'product' => $product,

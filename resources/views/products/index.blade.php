@@ -82,7 +82,7 @@
                             <div class="col-12 col-sm-6 col-md-3 mb-3">
                                 <div class="card h-100 product-card">
                                     <div class="bg-white border-bottom rounded-top text-center" style="padding: 8px 0; min-height: 68px;">
-                                        <a href="{{ route('products.show', $product['id']) }}" class="fw-bold text-gold text-decoration-none d-block">
+                                        <a href="{{ url($product['url']) }}" class="fw-bold text-gold text-decoration-none d-block">
                                             {{ $product['tieude'] ?? 'Không có tiêu đề' }}
                                         </a>
                                     </div>
