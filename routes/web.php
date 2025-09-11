@@ -147,7 +147,7 @@ Route::post('/api/proxy-wishlist-remove', function(\Illuminate\Http\Request $req
 // Proxy routes for comment system to avoid CORS
 Route::get('/api/proxy-product-info/{id}', function($id) {
     $res = \Illuminate\Support\Facades\Http::withOptions(['verify' => false])
-        ->get("https://demochung.125.atoz.vn/ww2/module.sanpham.chitiet.asp?id={$id}");
+        ->get("https://demodienmay.125.atoz.vn/ww2/module.sanpham.chitiet.asp?id={$id}");
     return response($res->body(), $res->status())
         ->header('Content-Type', 'application/json')
         ->header('Access-Control-Allow-Origin', '*')

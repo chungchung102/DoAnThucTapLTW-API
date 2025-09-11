@@ -24,7 +24,7 @@ class ProductService
 
     public function __construct()
     {
-        $this->apiBase = env('API_BASE_URL', 'https://demochung.125.atoz.vn/ww2/');
+        $this->apiBase = env('API_BASE_URL', 'https://demodienmay.125.atoz.vn/ww2/');
         $this->baseImageUrl = env('BASE_IMAGE_URL', 'https://choixanh.com.vn/');
         $this->defaultImage = env('DEFAULT_IMAGE_URL', 'https://via.placeholder.com/300x200?text=No+Image');
     }
