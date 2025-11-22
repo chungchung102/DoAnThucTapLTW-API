@@ -282,7 +282,7 @@ h2, h3 {
 
 /* Elegant Navbar */
 .elegant-navbar {
-    background-color: #1a252f;
+    background-color: #28a745; /* Màu xanh lá */
     height: 70px;
     position: fixed;
     top: 0;
@@ -296,45 +296,45 @@ h2, h3 {
 .elegant-navbar .navbar-brand {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #d4a017;
+    color: #ffffff; /* Chữ trắng */
 }
 
 .elegant-navbar .nav-link {
-    color: #d4a017 !important;
+    color: #ffffff !important; /* Chữ trắng */
     font-size: 1rem;
     padding: 0.5rem 1rem;
     transition: color 0.3s ease;
 }
 
 .elegant-navbar .nav-link:hover {
-    color: #ffffff !important;
+    color: #f8f9fa !important; /* Chữ trắng nhạt khi hover */
 }
 
 .elegant-navbar .dropdown-menu {
-    background-color: #1a252f;
-    border: 1px solid #d4a017;
+    background-color: #28a745; /* Màu xanh lá cho dropdown */
+    border: 1px solid #ffffff; /* Viền trắng */
     border-radius: 5px;
 }
 
 .elegant-navbar .dropdown-item {
-    color: #d4a017;
+    color: #ffffff; /* Chữ trắng */
     font-size: 0.9rem;
 }
 
 .elegant-navbar .dropdown-item:hover {
-    background-color: #2e3b4e;
+    background-color: #218838; /* Xanh lá đậm hơn khi hover */
     color: #ffffff;
 }
 
 .elegant-navbar .btn-outline-gold {
-    border-color: #d4a017;
-    color: #d4a017;
+    border-color: #ffffff; /* Viền trắng */
+    color: #ffffff; /* Chữ trắng */
     font-weight: bold;
 }
 
 .elegant-navbar .btn-outline-gold:hover {
-    background-color: #d4a017;
-    color: #1a252f;
+    background-color: #ffffff; /* Nền trắng khi hover */
+    color: #28a745; /* Chữ xanh lá khi hover */
 }
 
 .elegant-navbar .bi {
@@ -349,7 +349,7 @@ h2, h3 {
     }
 
     .elegant-navbar .navbar-nav {
-        background-color: #1a252f;
+        background-color: #28a745; /* Màu xanh lá cho mobile */
         padding: 10px;
     }
 
@@ -359,12 +359,12 @@ h2, h3 {
     }
 
     .elegant-navbar .dropdown-menu {
-        background-color: #2e3b4e;
+        background-color: #218838; /* Xanh lá đậm hơn cho mobile */
         border: none;
     }
 
     .elegant-navbar .dropdown-item {
-        color: #d4a017;
+        color: #ffffff; /* Chữ trắng */
         padding: 10px 20px;
     }
 
@@ -416,7 +416,7 @@ h2, h3 {
 }
 
 .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(212, 160, 23, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 /* Product Description */
